@@ -1,16 +1,12 @@
 package com.iodigital.weather;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 import java.util.StringJoiner;
 
-@Entity
 public class WeatherInfo {
     @Id
-    @GeneratedValue
     private Long id;
     private String region;
     private String country;

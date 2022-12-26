@@ -1,11 +1,10 @@
 package com.iodigital.weather;
 
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Repository
-public interface WeatherRepository extends ListCrudRepository<WeatherInfo, Long> {
-    List<WeatherInfo> findAllByCityIgnoreCase(final String city);
+public interface WeatherRepository extends ReactiveCrudRepository<WeatherInfo, Long> {
+    Flux<WeatherInfo> findAllByCityIgnoreCase(final String city);
 }

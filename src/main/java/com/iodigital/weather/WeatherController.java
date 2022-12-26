@@ -4,8 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/weather")
@@ -17,12 +16,12 @@ public class WeatherController {
     }
 
     @GetMapping
-    public List<WeatherInfo> getAll() {
+    public Flux<WeatherInfo> getAll() {
         return service.getAll();
     }
 
     @GetMapping("/city/{city}")
-    public List<WeatherInfo> getForCity(@PathVariable final String city) {
+    public Flux<WeatherInfo> getForCity(@PathVariable final String city) {
         return service.getForCity(city);
     }
 }

@@ -2,8 +2,7 @@ package com.iodigital.weather;
 
 import com.iodigital.weather.api.WeatherAPIClient;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
 
 @Service
 public class WeatherService {
@@ -15,19 +14,17 @@ public class WeatherService {
         this.repository = repository;
     }
 
-    public List<WeatherInfo> getAll() {
+    public Flux<WeatherInfo> getAll() {
         return repository.findAll();
     }
 
-    public List<WeatherInfo> getForCity(final String city) {
-        final var weatherForCity = repository.findAllByCityIgnoreCase(city);
-
-        if (!weatherForCity.isEmpty()) {
-            return weatherForCity;
-        }
-
-        final var apiResponse = api.getWeather(city);
-
-        return repository.saveAll(apiResponse.toWeatherInfoList());
+    public Flux<WeatherInfo> getForCity(final String city) {
+        return repository
+            .findAllByCityIgnoreCase(city)
+            .switchIfEmpty(
+                api
+                    .getWeather(city)
+                    .flatMapMany(apiResponse -> repository.saveAll(apiResponse.toWeatherInfoList()))
+            );
     }
 }
