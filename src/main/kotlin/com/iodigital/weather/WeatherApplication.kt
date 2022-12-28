@@ -1,17 +1,36 @@
 package com.iodigital.weather
 
-import org.springframework.boot.SpringApplication
+import org.springframework.boot.runApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
-import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.http.client.reactive.ReactorResourceFactory
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.blockhound.BlockHound
+import reactor.blockhound.integration.BlockHoundIntegration
 import java.time.Duration
 
-@EnableR2dbcRepositories
 @SpringBootApplication
 class WeatherApplication {
+    init {
+        BlockHound.install(
+            BlockHoundIntegration {
+                it
+                    .allowBlockingCallsInside(
+                        "java.util.ServiceLoader\$LazyClassPathLookupIterator",
+                        "parse"
+                    )
+                    .allowBlockingCallsInside(
+                        "kotlin.reflect.jvm.ReflectJvmMapping",
+                        "getKotlinFunction"
+                    ).allowBlockingCallsInside(
+                        "kotlin.reflect.full.KClasses",
+                        "getMemberProperties"
+                    )
+            }
+        )
+    }
+
     @Bean
     fun resourceFactory() = ReactorResourceFactory()
 
@@ -28,5 +47,5 @@ class WeatherApplication {
 }
 
 fun main(args: Array<String>) {
-    SpringApplication.run(WeatherApplication::class.java, *args)
+    runApplication<WeatherApplication>(*args)
 }
