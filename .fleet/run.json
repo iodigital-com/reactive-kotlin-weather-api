@@ -1,0 +1,15 @@
+{
+    "configurations": [
+        {
+            "type": "gradle",
+            "name": "weather",
+            "tasks": [
+                "bootRun"
+            ],
+            "args": [
+                "--console=plain"
+            ],
+        },
+
+    ]
+}
