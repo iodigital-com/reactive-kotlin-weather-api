@@ -10,6 +10,15 @@
                 "--console=plain"
             ],
         },
-
+        {
+            "type": "gradle",
+            "name": "test",
+            "tasks": [
+                "test"
+            ],
+            "args": [
+                "--console=plain"
+            ],
+        },
     ]
 }

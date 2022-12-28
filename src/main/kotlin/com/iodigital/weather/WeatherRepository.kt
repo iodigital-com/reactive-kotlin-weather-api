@@ -1,10 +1,10 @@
 package com.iodigital.weather
 
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
+import kotlinx.coroutines.flow.Flow
+import org.springframework.data.repository.kotlin.CoroutineCrudRepository
 import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
 
 @Repository
-interface WeatherRepository : ReactiveCrudRepository<WeatherInfo, Long> {
-    fun findAllByCityIgnoreCase(city: String): Flux<WeatherInfo>
+interface WeatherRepository : CoroutineCrudRepository<WeatherInfo, Long> {
+    suspend fun findAllByCityIgnoreCase(city: String): Flow<WeatherInfo>
 }

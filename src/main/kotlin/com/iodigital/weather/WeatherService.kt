@@ -1,23 +1,23 @@
 package com.iodigital.weather
 
 import com.iodigital.weather.api.WeatherAPIClient
+import kotlinx.coroutines.flow.toList
 import org.springframework.stereotype.Service
-import reactor.core.publisher.Flux
 
 @Service
 class WeatherService(
     private val api: WeatherAPIClient,
     private val repository: WeatherRepository
 ) {
-    fun getAll(): Flux<WeatherInfo> =
-        repository.findAll()
+    suspend fun getAll(): List<WeatherInfo> =
+        repository.findAll().toList()
 
-    fun getForCity(city: String): Flux<WeatherInfo> =
+    suspend fun getForCity(city: String): List<WeatherInfo> =
         repository
             .findAllByCityIgnoreCase(city)
-            .switchIfEmpty(
-                api
-                    .getWeather(city)
-                    .flatMapMany { repository.saveAll(it.toWeatherInfoList()) }
-            )
+            .toList()
+            .takeIf { it.isNotEmpty() }
+            ?: api
+                .getWeather(city)
+                .let { repository.saveAll(it.toWeatherInfoList()).toList() }
 }
